@@ -1,111 +1,42 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-
 import DayList from "./DayList";
 import "components/Application.scss";
 
 import {getAppointmentsForDay, getInterview, getInterviewersForDay} from "helpers/selectors"
 
 import Appointment from "components/Appointment/index"
+import useApplicationData from "hooks/useApplicationData";
 
 
 export default function Application(props) {
   // const [days, setDays] = useState([]);
   // const [day, setDay] = useState('Monday');
+  const {
+    state,
+    setDay,
+    bookInterview,
+    cancelInterview
+  } = useApplicationData();
 
-
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    // you may put the line below, but will have to remove/comment hardcoded appointments variable
-    appointments: {},
-  });
-
-  const appointments = getAppointmentsForDay(state, state.day);
   const interviewers = getInterviewersForDay(state, state.day);
-
-  function bookInterview(id, interview) {
-    console.log(id, interview);
-
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-
-    return axios.put(`/api/appointments/${id}`, appointment)
-    .then(() => {
-      setState({
-        ...state,
-        appointments
-      });
-    })
-  }
-  
-  function cancelInterview(id) {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-
-    return axios.delete(`/api/appointments/${id}`)
-    .then(() => {
-      setState({ ...state, appointments });
-    })
-  }
-
-
-  const schedule = appointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview);
-
-    return (
-      <Appointment
-        key={appointment.id}
-        id={appointment.id}
-        time={appointment.time}
-        interview={interview}
-        interviewers={interviewers}
-        bookInterview={bookInterview}
-        cancelInterview={cancelInterview}
-      />
-    );
-  });
-
-  const setDay = day => setState({ ...state, day });
-  
-  useEffect(() => {
-    //axios request here...
-    Promise.all([
-      axios.get('api/days'),
-      axios.get('api/appointments'),
-      axios.get('api/interviewers')
-    ]).then((all) => {
-      // set your states here with the correct values...
-      const [first, second, third] = all;
-      // console.log("first", first.data, "second", second.data, "third", third.data);
-      
-      setState(prev => ({
-        ...prev, 
-        days: first.data, 
-        appointments: second.data, 
-        interviewers: third.data 
-      }));
-    })
-  }, [])
+  const appointments = getAppointmentsForDay(state, state.day).map(
+    appointment => {
+      return (
+        <Appointment
+          key={appointment.id}
+          {...appointment}
+          interview={getInterview(state, appointment.interview)}
+          interviewers={interviewers}
+          bookInterview={bookInterview}
+          cancelInterview={cancelInterview}
+        />
+      );
+    }
+  );
 
   return (
     <main className="layout">
       <section className="sidebar">
-        {/* Replace this with the sidebar elements during the "Project Setup & Familiarity" activity. */}
         <img
           className="sidebar--centered"
           src="images/logo.png"
@@ -113,11 +44,11 @@ export default function Application(props) {
         />
         <hr className="sidebar__separator sidebar--centered" />
         <nav className="sidebar__menu">
-        <DayList
-          days={state.days}
-          day={state.day}
-          setDay={setDay}
-        />
+          <DayList 
+            days={state.days} 
+            day={state.day} 
+            setDay={setDay} 
+          />
         </nav>
         <img
           className="sidebar__lhl sidebar--centered"
@@ -125,10 +56,11 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-
       <section className="schedule">
-        { schedule }
-        <Appointment key="last" time="5pm" />
+        <section className="schedule">
+          {appointments}
+          <Appointment key="last" time="5pm" />
+        </section>
       </section>
     </main>
   );

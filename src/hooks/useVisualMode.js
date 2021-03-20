@@ -8,10 +8,9 @@ export default function useVisualMode(initial) {
     // setMode(newMode)
     if (replace) {
       setHistory(prev => [...prev.slice(0, -1), newMode]);
-      return;
+    } else {
+      setHistory(prev => [...prev, newMode])
     }
-
-    setHistory([...history, newMode])
   }
 
   const back = () => {
