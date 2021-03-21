@@ -33,7 +33,6 @@ export default function useApplicationData()  {
   const setDay = day => setState({ ...state, day });
 
   function bookInterview(id, interview) {
-    console.log(id, interview);
 
     const appointment = {
       ...state.appointments[id],
@@ -45,11 +44,22 @@ export default function useApplicationData()  {
       [id]: appointment
     };
 
+    const newDays = [...state.days];
+    for (let index in newDays) {
+      let day = newDays[index]
+      console.log("days[index]: ", day)
+      if(day.appointments.includes(id)) {
+        let updatedDay = { ...day, spots: day.spots - 1} 
+        newDays[index] = updatedDay
+      }
+    }
+
     return axios.put(`/api/appointments/${id}`, appointment)
     .then(() => {
       setState({
         ...state,
-        appointments
+        appointments,
+        days: newDays
       });
     })
   }
@@ -65,11 +75,27 @@ export default function useApplicationData()  {
       [id]: appointment
     };
 
+    const newDays = [...state.days];
+    for (let index in newDays) {
+      let day = newDays[index]
+      console.log("days[index]: ", day)
+      if(day.appointments.includes(id)) {
+        let updatedDay = { ...day, spots: day.spots + 1} 
+        newDays[index] = updatedDay
+      }
+    }
+
     return axios.delete(`/api/appointments/${id}`)
     .then(() => {
-      setState({ ...state, appointments });
+      setState({ ...state, appointments, days: newDays });
     })
   }
+  
+  const newDay = [...state.days]
+  console.log("spread state.days", newDay)
 
+
+  console.log("\n*** Initial Days State\n", state.days);
+  
   return { state, setDay, bookInterview, cancelInterview }
 }
