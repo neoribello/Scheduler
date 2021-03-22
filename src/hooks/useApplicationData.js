@@ -47,17 +47,16 @@ export default function useApplicationData()  {
   
   const updateSpots = function (dayName, days, appointments) {
     const day = days.find (element => element.name === dayName);
-    //unbooked give us an number of spots not books
     const notBooked = spotsLeft(day,appointments)
-    const newArrayState = days.map(element => {
+    const newArr = days.map(element => {
       if (element.name === dayName){
         console.log(element.name)
         return {...element, spots : notBooked}
       }
       return element;
     })
-    console.log(newArrayState)
-   return newArrayState;
+    console.log(newArr)
+   return newArr;
  }
 
   function bookInterview(id, interview) {
@@ -105,11 +104,11 @@ export default function useApplicationData()  {
     })
   }
   
-  const newDay = [...state.days]
-  console.log("spread state.days", newDay)
+  // const newDay = [...state.days]
+  // console.log("spread state.days", newDay)
 
 
-  console.log("\n*** Initial Days State\n", state.days);
+  // console.log("\n*** Initial Days State\n", state.days);
   
   return { state, setDay, bookInterview, cancelInterview }
 }

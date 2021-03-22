@@ -3,9 +3,10 @@ import React from 'react'
 import "components/InterviewList.scss";
 import InterviewerListItem from './InterviewerListItem'
 
+import PropTypes from 'prop-types';
 
-export default function InterviewList(props) {
-  const parsedInterviewList = props.interviewers.map(interviewer => {
+export default function InterviewerList(props) {
+  const parsedInterviewerList = props.interviewers.map(interviewer => {
     return (
       <InterviewerListItem 
         key={interviewer.id}
@@ -16,13 +17,19 @@ export default function InterviewList(props) {
       />
     )
   });
+  
+  InterviewerList.propTypes = {
+    interviewers: PropTypes.array.isRequired
+  };
+
 
   return (
     <section className="interviewers">
       <h4 className="interviewers__header text--light">Interviewer</h4>
       <ul className="interviewers__list">
-        {parsedInterviewList}
+        {parsedInterviewerList}
         </ul>
     </section>
   )
 }
+
