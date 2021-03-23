@@ -6,9 +6,9 @@ export default function useApplicationData()  {
   useEffect(() => {
     //axios request here...
     Promise.all([
-      axios.get('api/days'),
-      axios.get('api/appointments'),
-      axios.get('api/interviewers')
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers')
     ]).then((all) => {
       // set your states here with the correct values...
       const [first, second, third] = all;
@@ -36,7 +36,7 @@ export default function useApplicationData()  {
     let count = 0 ;
     
     for (const id of daysObj.appointments) {
-      const appointment = appointments [id];
+      const appointment = appointments[id];
       if(!appointment.interview){
         count ++;
       }
@@ -50,12 +50,12 @@ export default function useApplicationData()  {
     const notBooked = spotsLeft(day,appointments)
     const newArr = days.map(element => {
       if (element.name === dayName){
-        console.log(element.name)
+        // console.log(element.name)
         return {...element, spots : notBooked}
       }
       return element;
     })
-    console.log(newArr)
+    // console.log(newArr)
    return newArr;
  }
 
@@ -72,7 +72,7 @@ export default function useApplicationData()  {
     };
 
     const spots = updateSpots(state.day, state.days, appointments);
-    console.log(spots)
+    // console.log(spots)
 
     return axios.put(`/api/appointments/${id}`, appointment)
     .then(() => {
@@ -96,7 +96,7 @@ export default function useApplicationData()  {
     };
 
     const spots = updateSpots(state.day, state.days, appointments);
-    console.log(spots)
+    // console.log(spots)
 
     return axios.delete(`/api/appointments/${id}`)
     .then(() => {
