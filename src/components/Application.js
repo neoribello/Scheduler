@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import DayList from "./DayList";
 import "components/Application.scss";
 
@@ -9,8 +9,6 @@ import useApplicationData from "hooks/useApplicationData";
 
 
 export default function Application(props) {
-  // const [days, setDays] = useState([]);
-  // const [day, setDay] = useState('Monday');
   const {
     state,
     setDay,
