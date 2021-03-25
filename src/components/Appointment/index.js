@@ -21,25 +21,31 @@ const ERROR_SAVE = "ERROR_SAVE";
 const ERROR_DELETE = "ERROR_DELETE";
 
 export default function Appointment(props) {
+  //Different modes for showing different components
   const { mode, transition, back } = useVisualMode(props.interview ? SHOW : EMPTY);
 
+  //Saves the student name and interviewer saved
   function save(name, interviewer) {
     const interview = {
       student: name,
       interviewer
     };
+
     transition(SAVING)
 
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
-      .catch(error => transition(ERROR_SAVE, true));
+      .catch(() => transition(ERROR_SAVE, true));
   }
 
+  //Transitions to the deleting confirm message
   function confirmDelete() {
     transition(DELETING, true)
+    
+    //Actually deletes the contents inside
     props.cancelInterview(props.id)
       .then(() => transition(EMPTY))
-      .catch(error => transition(ERROR_DELETE, true))
+      .catch(() => transition(ERROR_DELETE, true))
   }
 
   function confirm() {

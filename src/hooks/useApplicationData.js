@@ -30,11 +30,14 @@ export default function useApplicationData()  {
 
   const setDay = day => setState({ ...state, day });
 
+
+  //Updates the spots if its either booked or cancelled
   const spotsLeft = function(daysObj, appointments) {
     let count = 0;
     
     for (const id of daysObj.appointments) {
       const appointment = appointments[id];
+      //Checks if interview is null / if its not null then count
       if(!appointment.interview){
         count ++;
       }
@@ -44,7 +47,7 @@ export default function useApplicationData()  {
 
   const updateSpots = function (dayName, days, appointments) {
     const day = days.find (element => element.name === dayName);
-    const notBooked = spotsLeft(day,appointments)
+    const notBooked = spotsLeft(day, appointments)
     const newArr = days.map(element => {
       if (element.name === dayName){
         return {...element, spots : notBooked}
